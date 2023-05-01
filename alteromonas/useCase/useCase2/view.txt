@@ -1,0 +1,79 @@
+genome_id	genome	genus	species
+Alteromonas_mediterranea_DE	Alteromonas mediterranea DE	Alteromonas	Alteromonas mediterranea
+Alteromonas_naphthalenivorans_SN2	Alteromonas naphthalenivorans SN2	Alteromonas	Alteromonas naphthalenivorans
+Alteromonas_macleodii_English_Channel_673	Alteromonas macleodii English Channel 673	Alteromonas	Alteromonas stellipolaris
+Alteromonas_macleodii_Black_Sea_11	Alteromonas macleodii Black Sea 11	Alteromonas	Alteromonas macleodii
+Alteromonas_macleodii_AltDE1	Alteromonas mediterranea AltDE1	Alteromonas	Alteromonas mediterranea
+Alteromonas_macleodii_Balearic_Sea_AD45	Alteromonas macleodii Balearic Sea AD45	Alteromonas	Alteromonas macleodii
+Alteromonas_sp_ALT199	Alteromonas sp. ALT199	Alteromonas	Alteromonas sp. ALT199
+Alteromonas_macleodii__Aegean_Sea_MED64_	Alteromonas mediterranea Aegean Sea MED64 	Alteromonas	Alteromonas mediterranea
+Alteromonas_macleodii__Ionian_Sea_U7_	Alteromonas mediterranea Ionian Sea U7 	Alteromonas	Alteromonas mediterranea
+Alteromonas_macleodii__Ionian_Sea_U8_	Alteromonas mediterranea Ionian Sea U8 	Alteromonas	Alteromonas mediterranea
+Alteromonas_macleodii__Ionian_Sea_UM4b_	Alteromonas mediterranea Ionian Sea UM4b 	Alteromonas	Alteromonas mediterranea
+Alteromonas_macleodii_ATCC_27126	Alteromonas macleodii ATCC 27126	Alteromonas	Alteromonas macleodii
+Alteromonas_macleodii__Ionian_Sea_U4_	Alteromonas mediterranea Ionian Sea U4 	Alteromonas	Alteromonas mediterranea
+Alteromonas_macleodii__Ionian_Sea_UM7_	Alteromonas mediterranea Ionian Sea UM7 	Alteromonas	Alteromonas mediterranea
+Alteromonas_macleodii__English_Channel_615_	Alteromonas mediterranea English Channel 615 	Alteromonas	Alteromonas mediterranea
+Alteromonas_australica_H17	Alteromonas australica H17	Alteromonas	Alteromonas australica
+Alteromonas_australica_DE170	Alteromonas australica DE170	Alteromonas	Alteromonas australica
+Alteromonas_stellipolaris_LMG21856	Alteromonas stellipolaris LMG21856	Alteromonas	Alteromonas stellipolaris
+Alteromonas_stellipolaris_PQQ_42	Alteromonas stellipolaris PQQ 42	Alteromonas	Alteromonas stellipolaris
+Alteromonas_macleodii_D7	Alteromonas macleodii D7	Alteromonas	Alteromonas macleodii
+Alteromonas_stellipolaris_PQQ_44	Alteromonas stellipolaris PQQ 44	Alteromonas	Alteromonas stellipolaris
+Alteromonas_sp_Mac1	Alteromonas sp. Mac1	Alteromonas	Alteromonas sp. Mac1
+Alteromonas_sp_Mac2	Alteromonas sp. Mac2	Alteromonas	Alteromonas sp. Mac2
+Alteromonas_macleodii_HOT1A3	Alteromonas macleodii HOT1A3	Alteromonas	Alteromonas macleodii
+Alteromonas_stellipolaris_LMG_21861	Alteromonas stellipolaris LMG 21861	Alteromonas	Alteromonas stellipolaris
+Alteromonas_mediterranea_U10	Alteromonas mediterranea U10	Alteromonas	Alteromonas mediterranea
+Alteromonas_mediterranea_UM8	Alteromonas mediterranea UM8	Alteromonas	Alteromonas mediterranea
+Alteromonas_stellipolaris_R10SW13	Alteromonas stellipolaris R10SW13	Alteromonas	Alteromonas stellipolaris
+Alteromonas_sp_BZK5	Alteromonas sp. BZK5	Alteromonas	Alteromonas sp.
+Alteromonas_sp_I10	Alteromonas sp. I10	Alteromonas	Alteromonas sp. I10
+Alteromonas_sp_Mex14	Alteromonas sp. Mex14	Alteromonas	Alteromonas sp. Mex14
+Alteromonas_mediterranea_CP48	Alteromonas mediterranea CP48	Alteromonas	Alteromonas mediterranea
+Alteromonas_sp_RW2A1	Alteromonas sp. RW2A1	Alteromonas	Alteromonas sp. RW2A1
+Alteromonas_mediterranea_AR43	Alteromonas mediterranea AR43	Alteromonas	Alteromonas mediterranea
+Alteromonas_mediterranea_CP49	Alteromonas mediterranea CP49	Alteromonas	Alteromonas mediterranea
+Alteromonas_mediterranea_RG65	Alteromonas mediterranea RG65	Alteromonas	Alteromonas mediterranea
+Alteromonas_sp_TK_46_2__DSM_26665	Alteromonas sp. TK 46 2  DSM 26665	Alteromonas	Alteromonas sp. TK-46(2)
+Alteromonas_macleodii_BGP6	Alteromonas macleodii BGP6	Alteromonas	Alteromonas macleodii
+Alteromonas_macleodii_BGP9	Alteromonas macleodii BGP9	Alteromonas	Alteromonas macleodii
+Alteromonas_macleodii_BGP14	Alteromonas macleodii BGP14	Alteromonas	Alteromonas macleodii
+Alteromonas_macleodii_MIT1002_Genome_closure	Alteromonas macleodii MIT1002 Genome closure	Alteromonas	Alteromonas macleodii
+Alteromonas_sp_LTR	Alteromonas sp. LTR	Alteromonas	Alteromonas sp. LTR
+Alteromonas_sp_MB_3u_76	Alteromonas sp. MB 3u 76	Alteromonas	Alteromonas sp. MB-3u-76
+Alteromonas_macleodii_EZ55	Alteromonas macleodii EZ55	Alteromonas	Alteromonas macleodii
+Alteromonas_pelagimontana_512	Alteromonas pelagimontana 512	Alteromonas	Alteromonas pelagimontana
+Alteromonas_aestuariivivens_KCTC_52655	Alteromonas aestuariivivens KCTC 52655	Alteromonas	Alteromonas aestuariivivens
+Alteromonas_lipolytica_JW12	Alteromonas lipolytica JW12	Alteromonas	Alteromonas lipolytica
+Alteromonas_sp_RKMC_009	Alteromonas sp. RKMC 009	Alteromonas	Alteromonas sp. RKMC-009
+Alteromonas_macleodii_Te101	Alteromonas macleodii Te101	Alteromonas	Alteromonas macleodii
+Alteromonas_abrolhosensis_PEL_68C	Alteromonas abrolhosensis PEL 68C	Alteromonas	Alteromonas abrolhosensis
+Alteromonas_alba_190	Alteromonas alba 190	Alteromonas	Alteromonas alba
+Alteromonas_confluentis_KCTC_42603	Alteromonas confluentis KCTC 42603	Alteromonas	Alteromonas confluentis
+Alteromonas_indica_IO390401	Alteromonas indica IO390401	Alteromonas	Alteromonas indica
+Alteromonas_sp_V450	Alteromonas sp. V450	Alteromonas	Alteromonas sp. V450
+Alteromonas_oceani_S35	Alteromonas oceani S35	Alteromonas	Alteromonas oceani
+Alteromonas_abrolhosensis_PEL_67E	Alteromonas abrolhosensis PEL 67E	Alteromonas	Alteromonas abrolhosensis
+Alteromonas_sp_LOR	Alteromonas sp. LOR	Alteromonas	Alteromonas sp. LOR
+Alteromonas_sp_KUL49	Alteromonas sp. KUL49	Alteromonas	Alteromonas sp. KUL49
+Alteromonas_portus_HB161718	Alteromonas portus HB161718	Alteromonas	Alteromonas portus
+Alteromonas_ponticola_MYP5	Alteromonas ponticola MYP5	Alteromonas	Alteromonas ponticola
+Alteromonas_sp_KUL106	Alteromonas sp. KUL106	Alteromonas	Alteromonas sp. KUL106
+Alteromonas_sp_KS69	Alteromonas sp. KS69	Alteromonas	Alteromonas sp. KS69
+Alteromonas_sediminis_U0105	Alteromonas sediminis U0105	Alteromonas	Alteromonas sediminis
+Alteromonas_sp_KUL150	Alteromonas sp. KUL150	Alteromonas	Alteromonas sp. KUL150
+Alteromonas_sp_KUL17	Alteromonas sp. KUL17	Alteromonas	Alteromonas sp. KUL17
+Alteromonas_sp_KUL42	Alteromonas sp. KUL42	Alteromonas	Alteromonas sp. KUL42
+Alteromonas_sp_07_89_2	Alteromonas sp. 07 89 2	Alteromonas	Alteromonas sp. 07-89-2
+Alteromonas_macleodii_QZ9_9	Alteromonas macleodii QZ9 9	Alteromonas	Alteromonas macleodii
+Alteromonas_macleodii_83_1	Alteromonas macleodii 83 1	Alteromonas	Alteromonas macleodii
+Alteromonas_mediterranea_PT11	Alteromonas mediterranea PT11	Alteromonas	Alteromonas mediterranea
+Alteromonas_mediterranea_PT15	Alteromonas mediterranea PT15	Alteromonas	Alteromonas mediterranea
+Alteromonas_mediterranea_AltCH17	Alteromonas mediterranea AltCH17	Alteromonas	Alteromonas mediterranea
+Alteromonas_sp_BL110	Alteromonas sp. BL110	Alteromonas	Alteromonas sp. BL110
+Alteromonas_sp_76_1	Alteromonas sp. 76 1	Alteromonas	Alteromonas sp. 76-1
+Alteromonas_sp_B31_7	Alteromonas sp. B31 7	Alteromonas	Alteromonas sp. B31-7
+Alteromonas_sp_KC3	Alteromonas sp. KC3	Alteromonas	Alteromonas sp. KC3
+Alteromonas_sp_KC14	Alteromonas sp. KC14	Alteromonas	Alteromonas sp. KC14
+Alteromonas_sp_LMIT006	Alteromonas sp. LMIT006	Alteromonas	Alteromonas sp. LMIT006
