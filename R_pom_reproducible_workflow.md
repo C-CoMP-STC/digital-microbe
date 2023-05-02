@@ -1,12 +1,15 @@
-# Making anvi'o databases for R. pom
+# Making the _Ruegeria pomeroyi_ Digital Microbe
 
 **Author: Iva Veseli**
 
 **Date: August 2022**
-**(Updated: December 2022)**
+**(Updated: May 2023)**
 
 
-C-CoMP is starting an initiative to put together all the data for their model organisms into sets of easily sharable anvi'o databases. We are starting with _Ruegeria pomeroyi_ DSS-3, which the Moran lab has been curating for years. Zac Cooper and Christa Smith have sent me an excel spreadsheet of their annotations (`Ruegeria pomeroyi DSS-3 gene annotations - March 2021.xlsx`), as well as an external gene calls file (`DSS3_external_gene_calls.txt`).
+This workflow describes the generation of a Digital Microbe for _Ruegeria pomeroyi_ DSS-3, a model marine organism. The Moran lab has been curating data on this organism for years, and there are several datasets to be integrated via the framework we have developed using the anvi'o platform. 
+
+
+We will start with generating the contigs database and importing a curated set of gene annotations. Zac Cooper and Christa Smith have sent me an excel spreadsheet of their annotations (`Ruegeria pomeroyi DSS-3 gene annotations - March 2021.xlsx`), as well as an external gene calls file (`DSS3_external_gene_calls.txt`).
 
 Note that I’m using anvi’o-dev to create the databases. Relevant version info:
 
@@ -541,3 +544,107 @@ clusterize -j anvi-merge -x -o 00_LOGS/anvi_merge_ver_01.log "anvi-merge -c 03_C
 # Uploading the databases to Zenodo
 
 The contigs database and the merged profile `VER_01` (which includes all transcriptome samples provided by the Moran Lab) are the first version of this dataset that is being uploaded to Zenodo for community-wide sharing. See the [C-CoMP Zenodo Community page](https://zenodo.org/communities/c-comp/).
+
+# Adding proteomics data
+
+Zac provided a table of normalized spectral abundance counts from proteomic samples that are matched to several of the transcriptomes already in the contigs database. We want to visualize these abundances as barplots in the interactive interface. Since this is gene-specific data, we will use gene mode to do it.
+
+Gene mode requires us to specify a collection and a bin (to work with genes within a specific set of splits), so I first added a default collection containing everything in the database:
+
+```
+anvi-script-add-default-collection -c R_POM_DSS3-contigs.db -p 06_MERGED/VER_01/PROFILE-VER_01.db
+```
+
+Then, I ran the interactive interface in gene mode to obtain a GENES database:
+
+```
+anvi-interactive -c R_POM_DSS3-contigs.db -p 06_MERGED/VER_01/PROFILE-VER_01.db -C DEFAULT -b EVERYTHING --gene-mode
+```
+
+While this was running, it gave this error indicating that something is up with two gene calls `1598` and `1599`:
+
+```
+🚑 SOMETHING WEIRD HAPPENED 🚑
+===============================================
+Please read this carefully as something sad just happened. While anvi'o was
+trying to recover gene level coverage stats, it became clear that a few gene
+calls were not found in splits they were meant to be found. These genes will not
+be a part of any downstream reporting :/ It is extremely difficult to even
+entertain the idea why this might have happened, we suspect it is some sort of
+artifact left behind from the use of external gene calls. Regardless, here are
+the gene calls that cause you this headache, in case you would like to go after
+this and find out why is this happening: 1598, 1599
+```
+
+And correspondingly, two gene calls (probably the same ones) don't have any coverage information:
+
+```
+WARNING
+===============================================
+Anvi'o observed something weird while it was processing gene level coverage
+statistics. Some of the gene calls stored in your contigs database (2 of them,
+precisely) did not have any information in gene level coverage stats dictionary.
+It is likely they were added to the contigs database *after* these gene level
+coverage stats were computed and stored. One way to address this is to remove
+the database file for gene coverage stats and re-run this step. [.....]
+```
+So, these two gene calls were added later to the database (I did not record this process, shame on me) and as a result have no coverage information from the samples we mapped to the genome. This is not a critical error, it just means that the two affected gene calls will not be shown in the 'genes mode' interface.
+
+
+The table Zac sent me has the normalized protein abundances already matched to the SPO IDs of each gene. I just have to convert the index to match the gene caller IDs from the contigs database. I quickly extracted a table of the SPO ID annotations for each gene:
+
+```
+anvi-export-functions  -c R_POM_DSS3-contigs.db --annotation-sources SPO_ID -o gene_call_to_SPO.txt
+```
+
+and then I converted the abundance table to one indexed by gene call. Since the sample (column) names in these files match to their corresponding transcriptome sample names, I altered those to indicate that they are proteome samples instead.
+
+```python
+import pandas as pd
+prot = pd.read_csv("20221121_DSS3_norm_prot_abund.txt", sep="\t", index_col=0)
+
+# change index to gene caller id
+spo = pd.read_csv("gene_call_to_SPO.txt", sep="\t")
+spo_to_gcid = dict(zip(spo.accession, spo.gene_callers_id))
+prot.rename(index=spo_to_gcid, inplace=True)
+
+# rename samples in columns
+new_cols = [x + "_proteome" for x in prot.columns]
+prot.columns = new_cols
+
+prot.to_csv("gcid_norm_prot_abund.txt", sep="\t")
+```
+
+Finally, I imported the protein abundance data into the genes database, and visualized it again to see that data in the interface:
+
+```
+anvi-import-misc-data -p 06_MERGED/VER_01/GENES/DEFAULT-EVERYTHING.db -t items gcid_norm_prot_abund.txt
+
+# visualize with gene mode
+anvi-interactive -c R_POM_DSS3-contigs.db -p 06_MERGED/VER_01/PROFILE-VER_01.db -C DEFAULT -b EVERYTHING --gene-mode
+```
+
+I then adjusted the settings to show only the proteomic data layers with their paired transcriptomes, and saved the state. To load the interactive interface with these settings, run the following:
+
+```
+anvi-interactive -c R_POM_DSS3-contigs.db -p 06_MERGED/VER_01/PROFILE-VER_01.db -C DEFAULT -b EVERYTHING --gene-mode --state-autoload proteomes
+```
+
+# Uploading the genes database to Zenodo (and important access information)
+
+I made a new version of the shared _R. pomeroyi_ databases on Zenodo at [https://zenodo.org/deposit/7884613](https://zenodo.org/deposit/7884613) which includes the newly-created genes database (`DEFAULT-EVERYTHING.db`) with the proteomic data layers. The genes database is associated with profile db VER_01 (the one with all the transcriptome samples).
+
+Unfortunately, it seems that Zenodo does not allow uploading of folders, so I could not keep the database in its expected directory structure of `GENES/DEFAULT-EVERYTHING.db`. Thus, to access this database in the anvi'o interactive interface, you need to run the following commands after the Zenodo datapack is downloaded:
+
+```
+mkdir GENES
+mv DEFAULT-EVERYTHING.db GENES/
+```
+
+Only then will you be able to run the visualization command for the proteomics data:
+
+```
+anvi-interactive -c R_POM_DSS3-contigs.db -p 06_MERGED/VER_01/PROFILE-VER_01.db -C DEFAULT -b EVERYTHING --gene-mode --state-autoload proteomes
+```
+
+If you don't move the genes database to its expected location, then anvi'o will automatically try to generate a new database for you (which will not include the proteomic data in it, since we imported that into the database after we created it).
