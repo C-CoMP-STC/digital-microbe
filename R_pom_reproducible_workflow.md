@@ -3,7 +3,7 @@
 **Author: Iva Veseli**
 
 **Date: August 2022**
-**(Updated: May 2023)**
+**(Last Updated: December 2023)**
 
 
 This workflow describes the generation of a Digital Microbe for _Ruegeria pomeroyi_ DSS-3, a model marine organism. The Moran lab has been curating data on this organism for years, and there are several datasets to be integrated via the framework we have developed using the anvi'o platform. 
@@ -644,7 +644,137 @@ mv DEFAULT-EVERYTHING.db GENES/
 Only then will you be able to run the visualization command for the proteomics data:
 
 ```
-anvi-interactive -c R_POM_DSS3-contigs.db -p 06_MERGED/VER_01/PROFILE-VER_01.db -C DEFAULT -b EVERYTHING --gene-mode --state-autoload proteomes
+anvi-interactive -c R_POM_DSS3-contigs.db -p PROFILE-VER_01.db -C DEFAULT -b EVERYTHING --gene-mode --state-autoload proteomes
 ```
 
 If you don't move the genes database to its expected location, then anvi'o will automatically try to generate a new database for you (which will not include the proteomic data in it, since we imported that into the database after we created it).
+
+# Migrating the databases to work with anvi'o v8-dev
+
+After the release of anvi'o v8 in September 2023, we started working with these databases using the `v8-dev` version of anvi'o (this is still the development version). Here is the relevant version info:
+
+```
+Anvi'o .......................................: marie (v8-dev)
+Python .......................................: 3.10.13
+
+Profile database .............................: 39
+Contigs database .............................: 22
+Pan database .................................: 17
+Genome data storage ..........................: 7
+Auxiliary data storage .......................: 2
+Structure database ...........................: 2
+Metabolic modules database ...................: 4
+tRNA-seq database ............................: 2
+```
+
+Since several of the database types had version changes, I migrated all of the _R. pomeroyi_ Digital Microbe databases:
+
+```
+anvi-migrate --migrate-safely R_POM_DSS3-contigs.db 06_MERGED/VER_01/*.db 06_MERGED/VER_01/GENES/DEFAULT-EVERYTHING.db
+```
+
+Going forward, these databases are compatible with anvio `v8-dev`.
+
+# Adding information about transcriptome samples to the GENES database
+
+I added information associated with each transcriptome, including study of origin (lead author, year, and DOI), NCBI BioProject accession, sample types and sample names to the genes database. I created a tab-delimited text file with this information and then imported it into the database like so:
+
+```
+anvi-import-misc-data -p 06_MERGED/VER_01/GENES/DEFAULT-EVERYTHING.db -t layers sample_layers_info.txt
+```
+
+This information was used to organize the samples according to study of origin. This organization is saved in the state called `figure`.
+
+# Adding mutant fitness data
+
+[This publication by Schreier et al](https://www.pnas.org/doi/full/10.1073/pnas.2217200120) describes the fitness of _R. pomeroyi_ gene mutants in various culture conditions. Much like the proteomics data, this is gene-specific information that has to be added to the genes database (ie, visualized with `anvi-interactive` in `--gene-mode`).
+
+The data table contains the following co-culture sample names:
+- w_1_rpomAlone through w_4_rpomAlone: R. pomeroyi is the only bacterium in the co-culture (4 replicate co-cultures)
+- w_1_vib through w_4_vib: Both R.pom and Vibrio heptarius were present in the co-culture
+- w_1_mari through w_4_mari: Both R. pomeroyi and Marivivens donghaensis were present in the co-culture
+- w_1_CC through w_4_CC: All three bacteria (R. pomeroyi, Vibrio heptarius, and Marivivens donghaensis ) were present in the co-culture
+
+The raw, per-gene fitness data can [be found on Github](https://github.com/jschreie/TnSeq_Phycosphere_Interactions/blob/main/FitnessScripts/Data/fitness_raw_20220701.csv). I converted this to a tab-delimited file, and the first thing I did was to check whether all of the SPO locus tags in the table correspond to a gene call in the contigs database:
+
+```
+tail -n+2 gene_call_to_SPO.txt | cut -f 3 | sort > spo_in_db.txt
+tail -n+2 fitness_raw_20220701.txt | cut -f 1 | sort > spo_in_fitness.txt
+diff spo_in_db.txt spo_in_fitness.txt | grep -c '<'
+# 291
+diff spo_in_db.txt spo_in_fitness.txt | grep '>'
+# > SPOA0411
+```
+While the expected number of gene calls (291) was missing from the fitness data table, this table also includes one SPO locus tag that is not associated with a gene call in the _R. pomeroyi_ database, `SPOA0411`. This locus tag is labeled as a hypothetical protein in the annotation Excel files provided by the Moran lab, but it is not one of the genes with a corresponding gene call in the external gene calls file used to create the database.
+
+To import the data, it needs to be indexed by the gene caller ID used in the anvi'o databases. I have a file called `gene_call_to_SPO.txt` that was exported from the contigs database and maps the two data types to each other. I opened the data table in Python and re-indexed the file with gene caller IDs:
+
+```python
+import pandas as pd
+gcid_table = pd.read_csv("gene_call_to_SPO.txt", sep="\t")
+fitness_table = pd.read_csv("fitness_raw_20220701.txt", sep="\t", index_col=0)
+spo_to_gcid = {gcid_table.loc[gcid, 'accession'] : gcid for gcid in gcid_table.index}
+fitness_table.rename(index=spo_to_gcid, inplace=True)
+fitness_table.index.name = 'gene_caller_id'
+fitness_table.to_csv("gene_to_fitness_data.txt", sep="\t")
+```
+The resulting table still has the line associated with SPOA0411. We have to get rid of that line before we try importing it, because it is a string data type and anvi'o will not read the other gene caller IDs as integers while there is at least one string in the first column:
+
+```bash
+grep -v SPOA0411 gene_to_fitness_data.txt > gcid_to_fitness.txt
+```
+
+I attempted to add this table to the database with this command:
+```
+anvi-import-misc-data -p 06_MERGED/VER_01/GENES/DEFAULT-EVERYTHING.db -t items gcid_to_fitness.txt
+```
+
+but it initially failed with the following error:
+```
+Config Error: Well. 2 of 4,157 entries in your additional data seem to be ONLY in your
+              additional data, and not in your database :/ Since there is no reason to add
+              additional data for items that do not exist in your database, anvi'o will stop
+              you right there. Please fix your data and come again.
+```
+
+This is happening because there are two gene calls from the contigs database that are not in the GENES database. If you look back at the section on Adding proteomics data, you will see that we had a warning about gene calls `1598` and `1599`.
+
+This means we cannot import the fitness data associated with these two gene mutants unless we want to remake the databases. So I removed them from the data table:
+
+```
+grep -v 1598 gcid_to_fitness.txt > new; mv new gcid_to_fitness.txt
+grep -v 1599 gcid_to_fitness.txt > new; mv new gcid_to_fitness.txt
+```
+
+After this, importing the data with the `anvi-import-misc-data` command from above worked.
+
+To summarize, the mutant fitness data for 4,155 genes in the _R. pomeroyi_ database was added as layers to the genes database (`DEFAULT-EVERYTHING.db`). The data for three mutants are missing:
+
+- SPOA0411, which is not associated with a gene caller ID
+- SPO1555 (gene call 1598), which is not present in the GENES database because it was added to the database after the transcriptome read recruitment was already done
+- SPO1556 (gene call 1599), same reason as SPO1555
+
+This data can be visualized using the same command to display the proteomic data, provided that the GENES database is located at `GENES/DEFAULT-EVERYTHING.db` relative to the location of the profile database:
+
+```
+anvi-interactive -c R_POM_DSS3-contigs.db -p PROFILE-VER_01.db -C DEFAULT -b EVERYTHING --gene-mode
+```
+
+
+# Available states for visualizing subsets of the data in `--gene-mode`
+
+The default visualization in `--gene-mode` shows all of the gene-associated data, including transcriptome read recruitment, proteomic abundance data, and gene mutant fitness data. However, the database includes some predefined sets of saved settings, called 'states', that enable one to visualize only a subset of this data (other data layers are still present, but simply hidden).
+
+To view only the proteomic data and its matched transcriptomes, add the flag `--state-autoload proteomes` to the `anvi-interactive` command:
+
+```
+anvi-interactive -c R_POM_DSS3-contigs.db -p PROFILE-VER_01.db -C DEFAULT -b EVERYTHING --gene-mode --state-autoload proteomes
+```
+
+There is also a state in which all transcriptomes and proteomic layers are organized according to their study of origin. This can be viewed by adding the flag `--state-autoload figure` to the `anvi-interactive` command:
+
+```
+anvi-interactive -c R_POM_DSS3-contigs.db -p PROFILE-VER_01.db -C DEFAULT -b EVERYTHING --gene-mode --state-autoload figure
+```
+
+These states can also be accessed from within the interactive interface, by selecting the button 'Load State'.
